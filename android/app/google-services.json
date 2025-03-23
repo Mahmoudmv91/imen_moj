@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "538764635625",
+    "project_id": "imen-moj-4eeec",
+    "firebase_url": "https://imen-moj-4eeec-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "storage_bucket": "imen-moj-4eeec.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:538764635625:android:d02e812c17e14d83b06f78",
+        "android_client_info": {
+          "package_name": "com.example.imen_moj"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3vyhRkdiV1kDGKUSeT4bln5gEABAPA2M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
