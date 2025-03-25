@@ -1,22 +1,12 @@
-import 'dart:convert';
-import 'dart:developer';
 
-import 'package:extended_image/extended_image.dart';
+
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:imen_moj/core/util/utils.dart';
 import 'package:imen_moj/features/auth/presentation/manager/login_provider.dart';
 import 'package:provider/provider.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
-
-  @override
-  State<LoginScreen> createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
-  String? avatar;
+  static const String routName = '/LoginScreen';
 
   @override
   Widget build(BuildContext context) {
@@ -39,25 +29,23 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               ElevatedButton(
                 onPressed: () {
-                  context.read<LoginProvider>().login();
+                  context.read<LoginProvider>().login(context);
                 },
                 child: Text('Login'),
               ),
-              ElevatedButton(
-                onPressed: () async {
-                  final data = await ImageUtil().takeImage(ImageSource.gallery);
-                  avatar = data;
-                  log(data.toString());
-                },
-                child: Text('Image'),
-              ),
-              if (avatar != null)
-                CircleAvatar(
-                  child: ExtendedImage.memory(const Base64Codec().decode(avatar!)),
-                ),
+
               Consumer<LoginProvider>(
                 builder: (_, provider, __) {
-                  return Text('${provider.user?.uid} +  ${provider.user?.name}  +  ${provider.user?.email}');
+                  return Column(
+                    children: [
+                      if (provider.errorMessage != null)
+                        Text(
+                          provider.errorMessage!,
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      Text('${provider.user?.uid} +  ${provider.user?.name}  +  ${provider.user?.email}'),
+                    ],
+                  );
                 },
               ),
             ],

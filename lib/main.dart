@@ -1,11 +1,18 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:go_router/go_router.dart';
+import 'package:imen_moj/core/helper/global_providers.dart';
 import 'package:imen_moj/core/helper/locator.dart';
-import 'package:imen_moj/features/auth/presentation/screens/login_screen.dart';
+import 'package:imen_moj/core/helper/theme_provider.dart';
+import 'package:imen_moj/core/util/colors.dart';
+import 'package:imen_moj/core/util/themes.dart';
+import 'package:provider/provider.dart';
 
 import 'config/firebase_option.dart';
+import 'config/routes.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,96 +21,76 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   FirebaseDatabase.instance.setPersistenceEnabled(true);
- await setup();
-  runApp(const MyApp());
+  await setup();
+  runApp(providers());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: const RegisterScreen(),
-    );
-  }
+  State<MyApp> createState() => _MyAppState();
 }
 
-class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+class _MyAppState extends State<MyApp> {
+  late final GoRouter _router;
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
-}
-
-class _RegisterScreenState extends State<RegisterScreen> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final DatabaseReference _dbRef = FirebaseDatabase.instance.ref();
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-
-  Future<void> register() async {
-    try {
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
-      );
-
-      String uid = userCredential.user!.uid;
-      await _dbRef.child("user").child(uid).set({
-        "name":_nameController.text,
-        "email":_emailController.text,
-        "createAt":DateTime.now().toIso8601String(),
-      });
-      debugPrint("User registered and saved to database");
-    } catch (e) {
-      debugPrint("Error: $e");
-    }
+  void initState() {
+    final themeProvider = context.read<ThemeProvider>();
+    super.initState();
+    _router = AppRouter().router;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      themeProvider.setSelectedThemeMode(ThemeMode.light);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Register'),
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          children: [
-            TextField(controller: _nameController, decoration: InputDecoration(labelText: "Name")),
-            TextField(controller: _emailController, decoration: InputDecoration(labelText: "Email")),
-            TextField(controller: _passwordController, decoration: InputDecoration(labelText: "Password"), obscureText: true),
-            SizedBox(height: 20),
-            ElevatedButton(onPressed: register, child: Text("Register"))
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Center(
-            child: Text('welcome'),
+    _orientationMethod();
+    _statusBarMethod();
+    return Consumer<ThemeProvider>(
+      builder: (_, themeProvider, __) {
+        return AnnotatedRegion(
+          value: SystemUiOverlayStyle(
+            systemNavigationBarColor: AColors.background,
+            systemNavigationBarIconBrightness: themeProvider.selectedThemeMode.index == 1 ? Brightness.dark : Brightness.light,
           ),
-          ElevatedButton(
-            onPressed: () async {
-              await FirebaseAuth.instance.signOut();
-            },
-            child: Text('signOut'),
+          child: MaterialApp.router(
+            routerConfig: _router,
+            locale: const Locale('fa', 'IR'),
+            localizationsDelegates: [
+              GlobalMaterialLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+            ],
+            supportedLocales: const[
+              Locale('en'),
+              Locale('fa'),
+            ],
+            theme: AppTheme.lightTheme(),
+            darkTheme: AppTheme.darkTheme(),
+            themeMode: themeProvider.selectedThemeMode,
+            themeAnimationStyle: AnimationStyle(
+              curve: Curves.easeIn,
+            ),
+            debugShowCheckedModeBanner: false,
+            title: 'ایمن موج',
           ),
-        ],
-      ),
+        );
+      },
     );
+  }
+
+  void _orientationMethod() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+  }
+
+  void _statusBarMethod() {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
   }
 }
