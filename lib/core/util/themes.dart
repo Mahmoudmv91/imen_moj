@@ -91,7 +91,7 @@ class AppTheme {
         errorBorder: OutlineInputBorder(
           borderRadius: borderRadius,
           borderSide: BorderSide(
-              width: 4,
+              width: 1,
               // color: AColors.textFieldBorderColor,
               color: Colors.red),
         ),
@@ -191,13 +191,13 @@ class AppTheme {
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: borderRadius,
           borderSide: BorderSide(
-            width: 4,
+            width: 1,
             color: Colors.red,
           ),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: borderRadius,
-          borderSide: BorderSide(width: 4, color: Colors.red),
+          borderSide: BorderSide(width: 1, color: Colors.red),
         ),
         disabledBorder: OutlineInputBorder(
           borderRadius: borderRadius,

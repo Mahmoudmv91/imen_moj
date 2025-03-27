@@ -1,54 +1,113 @@
-
-
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:imen_moj/core/util/utils_widget/custom_button.dart';
 import 'package:imen_moj/features/auth/presentation/manager/login_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../core/const/assets_utils.dart';
+import '../../../../core/helper/theme_provider.dart';
+import '../../../../core/util/colors.dart';
+import '../../../../core/util/utils_widget/custom_textfield.dart';
+
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
+
   static const String routName = '/LoginScreen';
 
   @override
   Widget build(BuildContext context) {
+    double size = MediaQuery.of(context).size.width;
     return ChangeNotifierProvider<LoginProvider>(
       create: (_) => LoginProvider(),
       builder: (context, child) {
         return Scaffold(
-          body: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            spacing: 25,
-            children: [
-              TextField(
-                controller: context.read<LoginProvider>().emailController,
-                decoration: InputDecoration(labelText: "Email"),
-              ),
-              TextField(
-                controller: context.read<LoginProvider>().passwordController,
-                decoration: InputDecoration(labelText: "Password"),
-                obscureText: true,
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  context.read<LoginProvider>().login(context);
-                },
-                child: Text('Login'),
-              ),
-
-              Consumer<LoginProvider>(
-                builder: (_, provider, __) {
-                  return Column(
-                    children: [
-                      if (provider.errorMessage != null)
-                        Text(
-                          provider.errorMessage!,
-                          style: TextStyle(color: Colors.red),
+          body: Center(
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                Consumer<ThemeProvider>(
+                  builder: (_, provider, __) {
+                    return provider.selectedThemeMode == ThemeMode.light
+                        ? ExtendedImage.asset(
+                            ImageAssets.img_bg_pattern,
+                            fit: BoxFit.fill,
+                          )
+                        : Container(
+                            color: AColors.background,
+                          );
+                  },
+                ),
+                SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      spacing: 20,
+                      children: [
+                        SizedBox(
+                          child: ExtendedImage.asset(
+                            ImageAssets.img_logo,
+                            width: size * .3,
+                            height: size * .3,
+                            fit: BoxFit.fill,
+                            layoutInsets: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                          ),
                         ),
-                      Text('${provider.user?.uid} +  ${provider.user?.name}  +  ${provider.user?.email}'),
-                    ],
-                  );
-                },
-              ),
-            ],
+                        Form(
+                          key: context.read<LoginProvider>().formKey,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            spacing: 20,
+                            children: [
+                              PTextField(
+                                controller: context.read<LoginProvider>().emailController,
+                                text: 'ایمیل',
+                                hintText: 'ایمیل خود را وارد نمایید',
+                                marginTop: 15,
+                                textFunction: (value) => context.read<LoginProvider>().validateEmail(value ?? ''),
+                              ),
+                              PTextField(
+                                controller: context.read<LoginProvider>().passwordController,
+                                text: 'پسورد',
+                                hintText: 'پسورد خود را وارد نمایید',
+                                obSecure: true,
+                                marginTop: 15,
+                                textFunction: (value) => context.read<LoginProvider>().validatePassword(value ?? ''),
+                              ),
+                            ],
+                          ),
+                        ),
+                        CustomButton(
+                          title: 'ورود',
+                          onTap: () {
+                            if (context.read<LoginProvider>().formKey.currentState!.validate()) {
+                              debugPrint('valid');
+                              context.read<LoginProvider>().login(context);
+                            } else {
+                              debugPrint('notValid');
+                            }
+                          },
+                        ),
+                        Consumer<LoginProvider>(
+                          builder: (_, provider, __) {
+                            return Column(
+                              children: [
+                                if (provider.errorMessage != null)
+                                  Text(
+                                    provider.errorMessage!,
+                                    style: TextStyle(color: Colors.red),
+                                  ),
+                                Text('${provider.user?.uid} +  ${provider.user?.name}  +  ${provider.user?.email}'),
+                              ],
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },

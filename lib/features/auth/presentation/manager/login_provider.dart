@@ -7,14 +7,14 @@ import 'package:imen_moj/core/helper/locator.dart';
 import 'package:imen_moj/features/auth/data/params/login_params.dart';
 import 'package:imen_moj/features/auth/domain/entities/user_entity.dart';
 import 'package:imen_moj/features/auth/domain/use_cases/login_use_case.dart';
+import 'package:imen_moj/features/auth/domain/use_cases/validate_use_case.dart';
 import 'package:imen_moj/features/user/presentation/user_screen.dart';
-import 'package:imen_moj/main.dart';
 
 class LoginProvider extends ChangeNotifier {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
   dispose() {
@@ -28,6 +28,14 @@ class LoginProvider extends ChangeNotifier {
   UserEntity? _user;
 
   UserEntity? get user => _user;
+
+  String? validateEmail(String email) {
+    return ValidateUseCase.validateEmail(email);
+  }
+
+  String? validatePassword(String password) {
+    return ValidateUseCase.validatePassword(password);
+  }
 
   Future<void> login(BuildContext context) async {
     LoginParams params = LoginParams(
@@ -50,5 +58,4 @@ class LoginProvider extends ChangeNotifier {
     }
     notifyListeners();
   }
-
 }

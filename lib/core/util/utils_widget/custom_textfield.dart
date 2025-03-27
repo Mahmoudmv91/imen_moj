@@ -241,7 +241,6 @@ class PTextField extends StatelessWidget {
             //     ),
             //   ),
             // ),
-
             textAlign: _textAlign!,
             style: _style ?? Theme.of(context).textTheme.bodySmall,
             controller: _controller,

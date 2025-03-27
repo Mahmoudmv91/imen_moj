@@ -3,11 +3,13 @@ import 'dart:convert';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:imen_moj/core/const/assets_utils.dart';
 import 'package:imen_moj/core/helper/theme_provider.dart';
 import 'package:imen_moj/core/util/colors.dart';
-import 'package:imen_moj/core/util/utils.dart';
+import 'package:imen_moj/core/util/utils_widget/custom_button.dart';
 import 'package:imen_moj/core/util/utils_widget/custom_textfield.dart';
+import 'package:imen_moj/features/auth/presentation/screens/login_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/util/transparent_image.dart';
@@ -25,6 +27,7 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
+    double size = MediaQuery.of(context).size.width * .3;
     return ChangeNotifierProvider<RegisterProvider>(
       create: (_) => RegisterProvider(),
       builder: (context, child) {
@@ -53,11 +56,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       spacing: 20,
                       children: [
                         SizedBox(
-                          width: MediaQuery.of(context).size.width * .3,
-                          height: MediaQuery.of(context).size.width * .3,
+                          width: size,
+                          height: size,
                           child: Consumer<RegisterProvider>(
                             builder: (_, provider, __) {
-                              var avatarWith = (MediaQuery.of(context).size.width * .3) * .3;
+                              var avatarWith = size * .3;
                               return Stack(
                                 clipBehavior: Clip.none,
                                 children: [
@@ -80,6 +83,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                             onTap: () => provider.resetAvatar(),
                                             child: SvgPicture.asset(
                                               SvgAssets.ic_register_delete_avatar,
+                                              colorFilter: ColorFilter.mode(AColors.foreground, BlendMode.srcATop),
                                               width: avatarWith,
                                               height: avatarWith,
                                             ),
@@ -89,6 +93,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                             onTap: () => provider.chooseAvatar(),
                                             child: SvgPicture.asset(
                                               SvgAssets.ic_register_select_avatar,
+                                              colorFilter: ColorFilter.mode(AColors.foreground, BlendMode.srcATop),
                                               width: avatarWith,
                                               height: avatarWith,
                                             ),
@@ -118,21 +123,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           hintText: 'پسورد خود را وارد نمایید',
                           text: 'پسورد',
                         ),
-                        Material(
-                          borderRadius: BorderRadius.circular(7.5),
-                          color: AColors.elevatedButton,
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(7.5),
-                            onTap: () {
-                              // context.read<RegisterProvider>().register();
-                            },
-                            child: Container(
-                              width: double.infinity,
-                              alignment: Alignment.center,
-                              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-                              child: Text('عضویت',style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: AColors.buttonColor),),
-                            ),
-                          ),
+                        CustomButton(
+                          title: 'عضویت',
+                          onTap: () {},
+                        ),
+                        CustomButton(
+                          title: 'ورود',
+                          onTap: () {
+                            context.push(LoginScreen.routName);
+                          },
                         ),
                       ],
                     ),
