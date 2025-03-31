@@ -1,18 +1,26 @@
 import 'dart:developer';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:imen_moj/core/params/create_user_params.dart';
+import 'package:imen_moj/core/domain/use_cases/create_user_use_case.dart';
+import 'package:imen_moj/core/utils/loading_provider.dart';
+import 'package:imen_moj/core/utils/validate/validate_fields.dart';
+import 'package:imen_moj/core/widgets/custom_button.dart';
+import 'package:imen_moj/features/user/presentation/screens/user_screen.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../core/helper/data_state.dart';
 import '../../../../core/helper/locator.dart';
-import '../../../../core/util/utils.dart';
-import '../../data/params/register_params.dart';
-import '../../domain/use_cases/register_use_case.dart';
+import '../../../../core/utils/utils.dart';
 
 class RegisterProvider extends ChangeNotifier {
   final TextEditingController registerNameController = TextEditingController();
   final TextEditingController registerEmailController = TextEditingController();
   final TextEditingController registerPasswordController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
@@ -26,21 +34,55 @@ class RegisterProvider extends ChangeNotifier {
 
   String? get avatar => _avatar;
 
-  Future<void> register() async {
-    RegisterParams registerParams = RegisterParams(
+  GlobalKey<FormState> get formKey => _formKey;
+
+  String? validateEmail(String email) {
+    return ValidateFields.validateEmail(email);
+  }
+
+  String? validatePassword(String password) {
+    return ValidateFields.validatePassword(password);
+  }
+
+  String? validateName(String fullName) {
+    return ValidateFields.validateFullName(fullName);
+  }
+
+  Future<void> register(BuildContext context) async {
+    final loading = context.read<LoadingProvider>();
+    loading.showLoading();
+    CreateUserParams registerParams = CreateUserParams(
       fullName: registerNameController.text,
       email: registerEmailController.text,
       password: registerPasswordController.text,
       userAvatar: avatar,
     );
-    RegisterUseCase registerRequest = locator();
-    var response = await registerRequest(registerParams);
+    CreateUserUseCase createUserRequest = locator();
+    var response = await createUserRequest(registerParams);
+    loading.hideLoading();
     if (response is DataSuccess) {
-      log('success');
+      context.push(UserScreen.routName);
+      log(response.data.toString());
     }
     if (response is DataFailed) {
+      AwesomeDialog(
+        context: context,
+        dialogType: DialogType.error,
+        animType: AnimType.scale,
+        title: 'خطا',
+        desc: response.errorMessage.toString(),
+        btnOkText: 'متوجه شدم',
+        btnOk: CustomButton(
+          title: 'متوجه شدم',
+          onTap: () {
+            context.pop();
+          },
+        ),
+        btnOkOnPress: () {},
+      )..show();
       log(response.errorMessage.toString());
     }
+
     notifyListeners();
   }
 

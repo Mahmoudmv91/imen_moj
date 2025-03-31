@@ -2,17 +2,18 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:imen_moj/core/helper/global_providers.dart';
 import 'package:imen_moj/core/helper/locator.dart';
 import 'package:imen_moj/core/helper/theme_provider.dart';
-import 'package:imen_moj/core/util/colors.dart';
-import 'package:imen_moj/core/util/themes.dart';
+import 'package:imen_moj/config/theme/colors.dart';
 import 'package:provider/provider.dart';
 
 import 'config/firebase_option.dart';
 import 'config/routes.dart';
+import 'config/theme/themes.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -58,6 +59,7 @@ class _MyAppState extends State<MyApp> {
           ),
           child: MaterialApp.router(
             routerConfig: _router,
+            builder: EasyLoading.init(),
             locale: const Locale('fa', 'IR'),
             localizationsDelegates: [
               GlobalMaterialLocalizations.delegate,

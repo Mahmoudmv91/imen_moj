@@ -4,17 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:imen_moj/core/helper/data_state.dart';
 import 'package:imen_moj/core/helper/locator.dart';
+import 'package:imen_moj/core/utils/loading_provider.dart';
+import 'package:imen_moj/core/utils/validate/validate_fields.dart';
 import 'package:imen_moj/features/auth/data/params/login_params.dart';
 import 'package:imen_moj/features/auth/domain/entities/user_entity.dart';
 import 'package:imen_moj/features/auth/domain/use_cases/login_use_case.dart';
-import 'package:imen_moj/features/auth/domain/use_cases/validate_use_case.dart';
-import 'package:imen_moj/features/user/presentation/user_screen.dart';
+import 'package:imen_moj/features/user/presentation/screens/user_screen.dart';
+import 'package:provider/provider.dart';
 
 class LoginProvider extends ChangeNotifier {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   dispose() {
@@ -28,16 +30,19 @@ class LoginProvider extends ChangeNotifier {
   UserEntity? _user;
 
   UserEntity? get user => _user;
+  GlobalKey<FormState> get formKey=>_formKey;
 
   String? validateEmail(String email) {
-    return ValidateUseCase.validateEmail(email);
+    return ValidateFields.validateEmail(email);
   }
 
   String? validatePassword(String password) {
-    return ValidateUseCase.validatePassword(password);
+    return ValidateFields.validatePassword(password);
   }
 
   Future<void> login(BuildContext context) async {
+    final loading = context.read<LoadingProvider>();
+    loading.showLoading();
     LoginParams params = LoginParams(
       email: emailController.text,
       password: passwordController.text,
@@ -56,6 +61,7 @@ class LoginProvider extends ChangeNotifier {
       errorMessage = response.errorMessage;
       log(response.errorMessage.toString());
     }
+    loading.hideLoading();
     notifyListeners();
   }
 }

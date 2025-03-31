@@ -2,7 +2,6 @@ import 'package:imen_moj/core/helper/data_state.dart';
 import 'package:imen_moj/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:imen_moj/features/auth/data/models/user_model.dart';
 import 'package:imen_moj/features/auth/data/params/login_params.dart';
-import 'package:imen_moj/features/auth/data/params/register_params.dart';
 import 'package:imen_moj/features/auth/domain/entities/user_entity.dart';
 import 'package:imen_moj/features/auth/domain/repositories/auth_repository.dart';
 
@@ -10,11 +9,6 @@ class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
 
   AuthRepositoryImpl(this.remoteDataSource);
-
-  // @override
-  // Future<UserEntity?> getCurrentUser() {
-  //   return remoteDataSource.getCurrentUser();
-  // }
 
   @override
   Future<DataState> login(LoginParams params) async{
@@ -34,21 +28,5 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<void> logout() {
     return remoteDataSource.logout();
-  }
-
-  @override
-  Future<DataState> register(RegisterParams params)async {
-    try{
-      var response = await remoteDataSource.register(params);
-      if(response is UserModel){
-        return DataSuccess(data: response);
-      }else{
-        return DataFailed(errorMessage: 'خطا');
-      }
-
-    }catch (e){
-      return DataFailed(errorMessage: e.toString());
-    }
-
   }
 }

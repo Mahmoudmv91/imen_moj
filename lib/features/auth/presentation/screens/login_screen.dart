@@ -1,13 +1,13 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
-import 'package:imen_moj/core/util/utils_widget/custom_button.dart';
+import 'package:imen_moj/core/widgets/custom_button.dart';
 import 'package:imen_moj/features/auth/presentation/manager/login_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/const/assets_utils.dart';
 import '../../../../core/helper/theme_provider.dart';
-import '../../../../core/util/colors.dart';
-import '../../../../core/util/utils_widget/custom_textfield.dart';
+import '../../../../config/theme/colors.dart';
+import '../../../../core/widgets/custom_textfield.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -80,11 +80,13 @@ class LoginScreen extends StatelessWidget {
                         CustomButton(
                           title: 'ورود',
                           onTap: () {
-                            if (context.read<LoginProvider>().formKey.currentState!.validate()) {
+                            var provider = context.read<LoginProvider>();
+                            if (provider.formKey.currentState!.validate()) {
                               debugPrint('valid');
-                              context.read<LoginProvider>().login(context);
+                              provider.login(context);
                             } else {
                               debugPrint('notValid');
+                              provider.formKey.currentState?.validate();
                             }
                           },
                         ),

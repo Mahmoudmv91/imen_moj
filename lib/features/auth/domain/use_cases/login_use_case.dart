@@ -1,5 +1,5 @@
 import 'package:imen_moj/core/helper/data_state.dart';
-import 'package:imen_moj/core/helper/use_case.dart';
+import 'package:imen_moj/core/use_cases/use_case.dart';
 import 'package:imen_moj/features/auth/domain/repositories/auth_repository.dart';
 
 import '../../data/params/login_params.dart';

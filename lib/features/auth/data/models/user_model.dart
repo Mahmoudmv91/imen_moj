@@ -1,5 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
-
 import '../../domain/entities/user_entity.dart';
 
 class UserModel extends UserEntity {
@@ -7,17 +5,17 @@ class UserModel extends UserEntity {
     required super.uid,
     required super.name,
     required super.email,
-     super.createdAt,
+    super.createdAt,
     super.avatar,
   });
 
-  factory UserModel.fromMap(User user) {
+  factory UserModel.fromMap(Map<String, dynamic> data) {
     return UserModel(
-      createdAt: DateTime.now().toIso8601String(),
-      uid: user.uid,
-      name: user.displayName ?? '',
-      email: user.email ?? '',
-      avatar: user.photoURL,
+      uid: data['uid'] ?? '',
+      name: data['name'] ?? '',
+      email: data['email'] ?? '',
+      avatar: data['avatar'] ?? '',
+      createdAt: data['createdAt'] ?? '',
     );
   }
 
@@ -27,7 +25,7 @@ class UserModel extends UserEntity {
       'name': name,
       'email': email,
       'avatar': avatar,
-      'createdAt': createdAt,
+      'createdAt': DateTime.now().toIso8601String(),
     };
   }
 }
