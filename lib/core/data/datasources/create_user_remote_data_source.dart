@@ -5,6 +5,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:imen_moj/core/params/create_user_params.dart';
 
 import '../../../features/auth/data/models/user_model.dart';
+import '../../helper/error_helper.dart';
 
 class CreateUserDataSource {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -31,32 +32,15 @@ class CreateUserDataSource {
           email: params.email,
           avatar: params.userAvatar,
         );
-        await _dbRef.child("users").push().set(user.toMap());
+        await _dbRef.child("users").child(uid).set(user.toMap());
         return user;
       }
     } on FirebaseAuthException catch (e) {
       log("FirebaseAuthException: ${e.message}");
-      throw _handleFirebaseAuthException(e);
+      throw handleFirebaseAuthException(e);
     } catch (e, stackTrace) {
       log("Unexpected error during login: $e", stackTrace: stackTrace);
       throw "خطای غیر منتظره ای رخ داد. لطفا دوباره تلاش نمایید";
-    }
-  }
-
-  String _handleFirebaseAuthException(FirebaseAuthException e) {
-    switch (e.code) {
-      case "invalid-email":
-        return "ایمیل وارد شده نامعتبر است.";
-      case "user-disabled":
-        return "حساب کاربری شما غیرفعال شده است.";
-      case "user-not-found":
-        return "کاربری با این ایمیل یافت نشد.";
-      case "invalid-credential":
-        return "رمز عبور نادرست است.";
-      case "email-already-in-use":
-        return "کاربری با این مشخصات وجود دارد";
-      default:
-        return "ورود ناموفق. لطفا بعدا تلاش نمایید.";
     }
   }
 }

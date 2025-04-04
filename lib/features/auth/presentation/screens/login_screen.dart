@@ -1,7 +1,9 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:imen_moj/core/widgets/custom_button.dart';
 import 'package:imen_moj/features/auth/presentation/manager/login_provider.dart';
+import 'package:imen_moj/features/auth/presentation/screens/register_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/const/assets_utils.dart';
@@ -90,20 +92,26 @@ class LoginScreen extends StatelessWidget {
                             }
                           },
                         ),
-                        Consumer<LoginProvider>(
-                          builder: (_, provider, __) {
-                            return Column(
-                              children: [
-                                if (provider.errorMessage != null)
-                                  Text(
-                                    provider.errorMessage!,
-                                    style: TextStyle(color: Colors.red),
-                                  ),
-                                Text('${provider.user?.uid} +  ${provider.user?.name}  +  ${provider.user?.email}'),
-                              ],
-                            );
+                        CustomButton(
+                          title: 'عضویت',
+                          onTap: () {
+                            context.pushReplacement(RegisterScreen.routName);
                           },
                         ),
+                        // Consumer<LoginProvider>(
+                        //   builder: (_, provider, __) {
+                        //     return Column(
+                        //       children: [
+                        //         if (provider.errorMessage != null)
+                        //           Text(
+                        //             provider.errorMessage!,
+                        //             style: TextStyle(color: Colors.red),
+                        //           ),
+                        //         Text('${provider.user?.uid} +  ${provider.user?.name}  +  ${provider.user?.email}'),
+                        //       ],
+                        //     );
+                        //   },
+                        // ),
                       ],
                     ),
                   ),

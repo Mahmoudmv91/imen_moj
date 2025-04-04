@@ -10,4 +10,13 @@ class UserParams {
     required this.email,
     required this.userAvatar,
   });
+
+  Map<String,dynamic> toMap(){
+    return {
+      'uid':uid,
+      'name':fullName,
+      'email':email,
+      'avatar':userAvatar,
+    };
+  }
 }

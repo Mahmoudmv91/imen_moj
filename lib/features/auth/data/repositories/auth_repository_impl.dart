@@ -14,9 +14,8 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<DataState> login(LoginParams params) async{
     try {
       var userCredential = await remoteDataSource.login(params);
-      if (userCredential.user != null) {
-        UserEntity userEntity = UserModel.fromMap(userCredential.user);
-        return DataSuccess<UserEntity>(data: userEntity);
+      if (userCredential is UserModel) {
+        return DataSuccess<UserEntity>(data: userCredential);
       } else {
         return DataFailed(errorMessage: 'User Not Found');
       }

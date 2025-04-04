@@ -13,7 +13,7 @@ class UserProvider extends ChangeNotifier {
 
   List<UserModel> get userList => _userList;
 
-  Future<List<UserModel>> getAllUsers(BuildContext context) async {
+  Future<void> getAllUsers(BuildContext context) async {
     final loading = context.read<LoadingProvider>();
     loading.showLoading();
     AllUsersUseCase request = locator();
@@ -21,13 +21,11 @@ class UserProvider extends ChangeNotifier {
     loading.hideLoading();
     if (response is DataSuccess) {
       _userList = response.data;
-      return _userList;
-      // log('${response.data}');
     }
     if (response is DataFailed) {
       log(response.errorMessage.toString());
+      _userList = [];
     }
-    return _userList;
-    // notifyListeners();
+    notifyListeners();
   }
 }

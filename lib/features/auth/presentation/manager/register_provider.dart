@@ -4,12 +4,12 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:imen_moj/core/const/assets_utils.dart';
 import 'package:imen_moj/core/params/create_user_params.dart';
 import 'package:imen_moj/core/domain/use_cases/create_user_use_case.dart';
 import 'package:imen_moj/core/utils/loading_provider.dart';
 import 'package:imen_moj/core/utils/validate/validate_fields.dart';
 import 'package:imen_moj/core/widgets/custom_button.dart';
-import 'package:imen_moj/features/user/presentation/screens/user_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/helper/data_state.dart';
@@ -48,21 +48,39 @@ class RegisterProvider extends ChangeNotifier {
     return ValidateFields.validateFullName(fullName);
   }
 
+  Future<String> getDefaultAvatar() async {
+    return await ImageUtil().convertAssetToBase64(ImageAssets.img_user_avatar_placeholder);
+  }
+
   Future<void> register(BuildContext context) async {
+    String defaultAvatar = await getDefaultAvatar();
     final loading = context.read<LoadingProvider>();
     loading.showLoading();
     CreateUserParams registerParams = CreateUserParams(
       fullName: registerNameController.text,
       email: registerEmailController.text,
       password: registerPasswordController.text,
-      userAvatar: avatar,
+      userAvatar: avatar ?? defaultAvatar,
     );
     CreateUserUseCase createUserRequest = locator();
     var response = await createUserRequest(registerParams);
     loading.hideLoading();
     if (response is DataSuccess) {
-      context.push(UserScreen.routName);
-      log(response.data.toString());
+      AwesomeDialog(
+        context: context,
+        dialogType: DialogType.success,
+        animType: AnimType.scale,
+        title: 'اکانت شما با موفقیت ساخته شد',
+        desc: 'می توانید با استفاده از دکمه ورود به اکانت خود دسترسی داشته باشید',
+        btnOkText: 'متوجه شدم',
+        btnOk: CustomButton(
+          title: 'متوجه شدم',
+          onTap: () {
+            context.pop();
+          },
+        ),
+        btnOkOnPress: () {},
+      )..show();
     }
     if (response is DataFailed) {
       AwesomeDialog(

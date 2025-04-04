@@ -1,3 +1,5 @@
+import 'package:shamsi_date/shamsi_date.dart';
+
 import '../../domain/entities/user_entity.dart';
 
 class UserModel extends UserEntity {
@@ -25,7 +27,17 @@ class UserModel extends UserEntity {
       'name': name,
       'email': email,
       'avatar': avatar,
-      'createdAt': DateTime.now().toIso8601String(),
+      'createdAt': '${Jalali.now().formatter.d} ${Jalali.now().formatter.mN} ${Jalali.now().formatter.y}',
     };
+  }
+
+  factory UserModel.fromEntity(UserEntity entity) {
+    return UserModel(
+      uid: entity.uid,
+      name: entity.name,
+      email: entity.email,
+      avatar: entity.avatar,
+      createdAt: entity.createdAt,
+    );
   }
 }

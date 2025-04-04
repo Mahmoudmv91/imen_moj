@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/services.dart' show ByteData, Uint8List, rootBundle;
 
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -64,5 +65,15 @@ class ImageUtil {
       base64Image = base64Encode(imageBytes);
     }
     return base64Image;
+  }
+
+  Future<String> convertAssetToBase64(String assetPath) async {
+    ///read file from assets
+    ByteData bytes = await rootBundle.load(assetPath);
+    Uint8List buffer = bytes.buffer.asUint8List();
+
+    ///convert to base64String
+    String base64String = base64Encode(buffer);
+    return base64String;
   }
 }

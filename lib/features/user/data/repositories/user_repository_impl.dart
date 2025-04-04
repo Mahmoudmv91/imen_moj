@@ -52,7 +52,7 @@ class UserRepositoryImpl implements UserRepository {
   @override
   Future<DataState> updateUser(UserParams params) async{
     try {
-      var response = await _userRemoteDataSource.updateUser(params.uid,{});
+      var response = await _userRemoteDataSource.updateUser(params.uid,params.toMap());
       if (response != null) {
         return DataSuccess(data: response);
       } else {
