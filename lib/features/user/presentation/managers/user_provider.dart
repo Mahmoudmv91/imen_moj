@@ -28,4 +28,12 @@ class UserProvider extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  Future<void> deleteUser() async {
+    ///TODO:deleteUser method
+  }
+
+  Future<void> updateUser() async {
+    ///TODO:updateUser method
+  }
 }

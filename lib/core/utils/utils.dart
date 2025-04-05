@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:flutter/services.dart' show ByteData, Uint8List, rootBundle;
 
 import 'package:flutter/material.dart';
+import 'package:gallery_saver_plus/gallery_saver.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 
 class ImageUtil {
   final ImagePicker _picker = ImagePicker();
@@ -75,5 +77,32 @@ class ImageUtil {
     ///convert to base64String
     String base64String = base64Encode(buffer);
     return base64String;
+  }
+
+  Future<String> saveBase64ToGallery(String base64String) async {
+    String _result='';
+
+    final base64Str = base64String.split(',').last;
+
+
+    Uint8List bytes = base64Decode(base64Str);
+
+
+    final tempDir = await getTemporaryDirectory();
+    final filePath = '${tempDir.path}/image_${DateTime.now().millisecondsSinceEpoch}.png';
+
+
+    final file = File(filePath);
+    await file.writeAsBytes(bytes);
+
+
+    await GallerySaver.saveImage(file.path).then((success) {
+      if (success == true) {
+        _result = "تصویر با موفقیت ذخیره شد";
+      } else {
+        _result =  "ذخیره‌سازی موفق نبود";
+      }
+    });
+    return _result;
   }
 }

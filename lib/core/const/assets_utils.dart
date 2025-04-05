@@ -12,4 +12,7 @@ class SvgAssets {
   static const String ic_manage_update_user = 'assets/icons/ic_manage_update_user.svg';
   static const String ic_register_delete_avatar = 'assets/icons/ic_register_delete_avatar.svg';
   static const String ic_register_select_avatar = 'assets/icons/ic_register_select_avatar.svg';
+  static const String ic_user_save_avatar = 'assets/icons/ic_user_save_avatar.svg';
+  static const String ic_user_menu = 'assets/icons/ic_user_menu.svg';
+  static const String ic_user_exit = 'assets/icons/ic_user_exit.svg';
 }

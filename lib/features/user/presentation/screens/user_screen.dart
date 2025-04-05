@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:extended_image/extended_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:imen_moj/config/theme/colors.dart';
 import 'package:imen_moj/features/auth/data/models/user_model.dart';
@@ -26,6 +27,7 @@ class UserScreen extends StatefulWidget {
 
 class _UserScreenState extends State<UserScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   void initState() {
     super.initState();
@@ -40,9 +42,7 @@ class _UserScreenState extends State<UserScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final map = GoRouterState.of(context).extra as UserModel;
-    final user = map;
-    debugPrint(map.toString());
+    final user = GoRouterState.of(context).extra as UserModel;
     return ChangeNotifierProvider(
       create: (_) => UserProvider(),
       child: Scaffold(
@@ -67,22 +67,31 @@ class _UserScreenState extends State<UserScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Center(
-                      child: Text('welcome'),
+                    const SizedBox(height: 20),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          GestureDetector(
+                            onTap:(){
+                              _scaffoldKey.currentState!.openDrawer();
+                            },
+                            child: SvgPicture.asset(
+                              SvgAssets.ic_user_menu,
+                              width: 30,
+                            ),
+                          ),
+                          Text('لیست کاربران', style: Theme.of(context).textTheme.bodyMedium),
+                          Consumer<UserProvider>(
+                            builder: (context, provider, child) {
+                              return Text(provider.userList.length.toString() + ' نفر', style: Theme.of(context).textTheme.bodyMedium);
+                            },
+                          ),
+                        ],
+                      ),
                     ),
-                    ElevatedButton(
-                      onPressed: () async {
-                        // await getAllUsers();
-                        await FirebaseAuth.instance.signOut();
-                      },
-                      child: Text('signOut'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        _scaffoldKey.currentState?.openDrawer();
-                      },
-                      child: Text('drawer'),
-                    ),
+                    const SizedBox(height: 20),
                     const UsersWidget(),
                   ],
                 ),
@@ -90,7 +99,7 @@ class _UserScreenState extends State<UserScreen> {
             ],
           ),
         ),
-        drawer: const DrawerWidget(),
+        drawer: DrawerWidget(data: user),
       ),
     );
   }
