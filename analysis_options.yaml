@@ -21,17 +21,17 @@ linter:
   # `// ignore_for_file: name_of_lint` syntax on the line or in the file
   # producing the lint.
   rules:
-    avoid_unused_constructor_parameters
-    prefer_const_constructors
-    prefer_constructors_over_static_methods
-    prefer_const_constructors_in_immutables
-    sized_box_shrink_expand
-    sort_constructors_first
-    sort_unnamed_constructors_first
-    type_literal_in_constant_pattern
-    unnecessary_const
-    unnecessary_constructor_name
-    use_named_constants
+    - avoid_unused_constructor_parameters
+    - prefer_const_constructors
+    - prefer_constructors_over_static_methods
+    - prefer_const_constructors_in_immutables
+    - sized_box_shrink_expand
+    - sort_constructors_first
+    - sort_unnamed_constructors_first
+    - type_literal_in_constant_pattern
+    - unnecessary_const
+    - unnecessary_constructor_name
+    - use_named_constants
 
 
 
